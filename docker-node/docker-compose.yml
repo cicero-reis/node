@@ -1,0 +1,66 @@
+version: '3'
+
+networks:
+  ccr-network:
+    driver: bridge
+
+services:
+  nginx:
+    build:
+      dockerfile: ./docker/nginx.dockerfile
+      context: .
+    image: ciceroreis/nginx
+    container_name: ccr-nginx
+    ports:
+      - "80:80"
+    networks: 
+      - ccr-network
+    depends_on:
+      - "node1"
+      - "node2"
+      - "node3"
+
+  mongodb:
+    image: mongo:4.2
+    container_name: mongodb
+    networks:
+      - ccr-network
+
+  node1:
+    build:
+      dockerfile: ./docker/node.dockerfile
+      context: .
+    image: ciceroreis/node
+    container_name: ccr-node-1
+    ports:
+      - "3000"
+    networks:
+      - ccr-network
+    depends_on:
+      - "mongodb"
+
+  node2:
+    build:
+      dockerfile: ./docker/node.dockerfile
+      context: .
+    image: ciceroreis/node
+    container_name: ccr-node-2
+    ports:
+      - "3000"
+    networks:
+      - ccr-network
+    depends_on:
+      - "mongodb"
+
+  node3:
+    build:
+      dockerfile: ./docker/node.dockerfile
+      context: .
+    image: ciceroreis/node
+    container_name: ccr-node-3
+    ports:
+      - "3000"
+    networks:
+      - ccr-network
+    depends_on:
+      - "mongodb"
